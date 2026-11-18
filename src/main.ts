@@ -1,66 +1,15 @@
-import { device } from "@shared/device";
-import { column, render, type Node } from "@busy-app/busy-lib";
-import manifest from "./appmeta/manifest.json";
-
-/** The name the app draws under; the device clears elements by this id. */
-const APP = manifest.id;
-
-/** How often the screen is redrawn. */
-const TICK_MS = 1000;
-
-const WHITE = "#FFFFFFFF";
-const SUBTLE_WHITE = "#FFFFFF80";
-
-/**
- * The frame drawn on every tick. The screen is 72×16, so two short lines are about all that fits.
- */
-function frame(ticks: number): Node {
-  return column({ justify: "center", align: "center" }, [
-    { type: "text", id: "title", text: "Hello", font: "bold", color: WHITE },
-    {
-      type: "text",
-      id: "ticks",
-      text: String(ticks),
-      font: "small",
-      color: SUBTLE_WHITE,
-    },
-  ]);
-}
-
-/** Sends one frame to the device. */
-async function draw(ticks: number): Promise<void> {
-  const elements = render(frame(ticks));
-  await device.DisplayDraw({ application_name: APP, priority: 50, elements });
-}
-
-/**
- * Entry point, called at the end of the file: the device runs this script from top to bottom and starts nothing by itself.
- */
-function main(): void {
-  let ticks = 0;
-  let stopped = false;
-
-  const report = (err: unknown) =>
-    console.error(`${APP}: ${err instanceof Error ? err.message : String(err)}`);
-
-  void draw(ticks).catch(report);
-
-  // Tick errors are reported, not thrown: one failed request must not stop the loop.
-  const timer = setInterval(() => {
-    ticks += 1;
-    void draw(ticks).catch(report);
-  }, TICK_MS);
-
-  // Back leaves the app. Once the timer is cleared and the handler detached, nothing keeps it alive and the device takes the screen back.
-  const unbind = listen("input", (event) => {
-    if (stopped || event.key !== "back" || event.action !== "short") return;
-
-    stopped = true;
-    clearInterval(timer);
-
-    // Not detached from inside the handler itself: with nothing else left the unbind stops the app on the spot, while this handler is still running.
-    setTimeout(unbind, 0);
-  });
-}
-
-main();
+import {desk} from "@shared/desk";
+import {wrap} from "@shared/surface";
+let loans=[{name:"Library book",due:"2026-11-20"},{name:"Tripod",due:"2026-11-26"}];
+type S={closed:string[];index:number;history:boolean};
+function key(x:{name:string;due:string}){return x.name+"|"+x.due;}
+function list(s:S){return loans.filter(x=>s.closed.includes(key(x))===s.history);}
+desk<S>({name:"Shelf Return",accent:"#ECA64C",motion:{"motif":"bookmark","color":"#ECA64C","shine":"#FFF0BB"},initial:()=>({closed:[],index:0,history:false}),configure:(s,v)=>{
+ const items=String(v.loans||"").split(";").map(t=>t.split("|")).filter(a=>a[0]?.trim()&&/^\d{4}-\d{2}-\d{2}$/.test(a[1]?.trim()||""));
+ loans=items.slice(0,8).map(a=>({name:a[0].trim(),due:a[1].trim()})).sort((a,b)=>a.due<b.due?-1:a.due>b.due?1:0);s.index=0;},
+ render:(s,now)=>{const a=list(s),x=a[s.index%Math.max(1,a.length)];const t=new Date(now);const d=x?Date.parse(x.due+"T00:00:00Z")-Date.UTC(t.getFullYear(),t.getMonth(),t.getDate()):0;
+ const days=Math.round(d/86400000);return {title:s.history?"Returned":"Return by",value:x?(days<0?-days+"d late":days===0?"Today":days+" days"):"All clear",
+ lines:[x?.name||"No items in this view",x?.due||"Edit loans in settings",(s.index+Number(!!x))+" / "+a.length,
+ "Wheel: choose loan",s.history?"Click: reopen loan":"Click: mark returned","Start: returned / pending"]};},
+ action:(s,k)=>{const a=list(s);if(k==="start"){s.history=!s.history;s.index=0;return;}if(!a.length)return;
+ if(k==="up"||k==="down")s.index=wrap(s.index+(k==="up"?1:-1),a.length);if(k==="ok"){const x=key(a[s.index%a.length]);s.closed=s.history?s.closed.filter(t=>t!==x):s.closed.concat(x).slice(-40);s.index=0;}}});

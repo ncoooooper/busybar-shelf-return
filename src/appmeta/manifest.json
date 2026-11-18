@@ -4,6 +4,6 @@
   "name": "Shelf Return",
   "version": "0.1.0",
   "api_version": "27.12.0",
-  "description": "Shelf Return",
+  "description": "Remember loaned items, sort them by due date and mark a real return from the bar.",
   "author": "ncoooooper"
 }
