@@ -4,6 +4,20 @@ Remember loaned items, sort them by due date and mark a real return from the bar
 
 A shelf full of objects gives little clue which one is due first. Shelf Return puts the nearest outstanding due date first and lets you undo a return if the wrong item was closed.
 
+## Screen transitions
+
+Watch a returned loan move out of the active list and back when you undo it.
+
+![Shelf Return front display. Watch a returned loan move out of the active list and back when you undo it.](media/guide/screen-transitions.gif)
+
+<details>
+
+<summary>Watch the rear display</summary>
+
+![Shelf Return rear display during the recorded controls](media/guide/screen-transitions-rear.gif)
+
+</details>
+
 ## Mark a physical return
 
 1. Enter up to eight loans in device settings using `Item|YYYY-MM-DD` for each, separated by semicolons.
@@ -34,7 +48,7 @@ Open BUSY Bar Emulator. From this repository, run:
 
 Press **Back** to exit.
 
-The GIFs are excerpts from the emulator recording. Each front-display pixel is shown at 9× its original width and height. The end frames pause for reading.
+The GIFs are excerpts from the emulator recording. Each LED occupies a 16 × 16 cell with a black border. The end frames pause for reading.
 
 [Full recording](media/controls.mp4) · [Rear display](screenshots/back-1.png) · [Firmware test](EMULATOR-QA.md) · [MIT license](LICENSE)
 

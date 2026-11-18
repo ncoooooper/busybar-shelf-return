@@ -1,7 +1,7 @@
 {
   "name": "busybar-shelf-return",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Remember loaned items, sort them by due date and mark a real return from the bar.",
   "author": "ncoooooper",
   "type": "module",
