@@ -2,10 +2,39 @@
 
 Remember loaned items, sort them by due date and mark a real return from the bar.
 
-In settings enter up to eight loans as Item|YYYY-MM-DD separated by semicolons, using local due dates. The earliest outstanding item appears first. Wheel browses. Click marks the displayed loan returned. Start toggles between outstanding and returned loans; click in the returned view restores a mistakenly closed item.
+A shelf full of objects gives little clue which one is due first. Shelf Return puts the nearest outstanding due date first and lets you undo a return if the wrong item was closed.
 
-## Run locally
+## Mark a physical return
 
-From this folder, run `~/.busy-emulator/bin/busy-emulator dev --once` with BUSY Bar Emulator open. Back exits.
+1. Enter up to eight loans in device settings using `Item
+2. YYYY-MM-DD` for each, separated by semicolons.
+3. Read the item name and date on the rear. The front says **Today**, shows the days remaining or counts days late. Turn the wheel if you need a different loan.
+4. Once you have returned the item, click. In the recording the next outstanding due date moves from two days away to eight.
 
-![BUSY Bar front display](screenshots/front-1.png)
+![Return by changes from two days to eight days after a loan is closed.](media/guide/mark-item-returned.gif)
+
+## Reopen a loan closed in error
+
+1. Press **Start** to browse the returned list. Use the wheel to find the item by its name and date.
+2. Click to restore it. The returned view shows **All clear** when there are no other closed loans.
+3. Press **Start** to return to outstanding loans. The restored item again appears in due-date order.
+
+![The returned list becomes clear and the outstanding two-day item reappears.](media/guide/restore-a-loan.gif)
+
+## Example from the emulator
+
+A book due on the twentieth and a tripod due on the twenty-sixth sort in that order. Returning the book brings the tripod to the front. The countdown uses local calendar days, so the time of day does not shift the due date.
+
+## Run in the emulator
+
+Open BUSY Bar Emulator. From this repository, run:
+
+```sh
+~/.busy-emulator/bin/busy-emulator dev --once
+```
+
+Press **Back** to exit.
+
+The GIFs are excerpts from the emulator recording. Each front-display pixel is shown at 9× its original width and height. The end frames pause for reading.
+
+[Full recording](media/controls.mp4) · [Rear display](screenshots/back-1.png) · [Firmware test](EMULATOR-QA.md) · [MIT license](LICENSE)
